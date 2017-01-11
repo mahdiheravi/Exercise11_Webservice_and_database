@@ -13,23 +13,31 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UpdateService extends Service {
     ArrayList<news> mynews;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("Started", "STARTED");
-        String url = "http://razmkhah.ir/b/index.php";
-       // String url = "http://www.ion.ir/news/GetJson";
+       // String url = "http://razmkhah.ir/b/index.php";
+        String url = "http://www.ion.ir/news/GetJson";
         StringRequest request = new StringRequest(Method.GET, url, new Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("RESPONSE", response);
-                
+                Gson mygson = new Gson();
+                mynews = mygson.fromJson(response, new TypeToken<List<news>>(){}.getType());
+                //Log.d("RESPONSE",mynews.get(0).getService());
+
+              //  Log.d("RESPONSE", "size="+mynews.size());
+               // mynews  = mygson.fromJson(response,news.class);
                 EventBus.getDefault().post(new IntentServiceResults(Activity.RESULT_OK, "done!!"));
 
 
