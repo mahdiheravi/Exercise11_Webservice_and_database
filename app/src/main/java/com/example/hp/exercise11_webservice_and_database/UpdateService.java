@@ -3,6 +3,8 @@ package com.example.hp.exercise11_webservice_and_database;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -26,18 +28,42 @@ public class UpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("Started", "STARTED");
+        DBHelper mydb = new DBHelper();
+        final SQLiteDatabase db = mydb.getWritableDatabase();
        // String url = "http://razmkhah.ir/b/index.php";
         String url = "http://www.ion.ir/news/GetJson";
-        StringRequest request = new StringRequest(Method.GET, url, new Listener<String>() {
+        final StringRequest request = new StringRequest(Method.GET, url, new Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("RESPONSE", response);
                 Gson mygson = new Gson();
-                mynews = mygson.fromJson(response, new TypeToken<List<news>>(){}.getType());
-                //Log.d("RESPONSE",mynews.get(0).getService());
+                String createStudent;
+                String tmptitr;
 
-              //  Log.d("RESPONSE", "size="+mynews.size());
-               // mynews  = mygson.fromJson(response,news.class);
+                mynews = mygson.fromJson(response, new TypeToken<List<news>>(){}.getType());
+                Log.d("RESPONSE", "size="+mynews.size());
+
+                for (int i=0;i<50;i++)
+                {
+                    Log.d("LOOP","i  = "+i);
+                    Log.d("service",mynews.get(i).getService());
+                    Log.d("titr",mynews.get(i).getTitr());
+                    Log.d("lead",mynews.get(i).getLead());
+
+                    tmptitr = mynews.get(i).getTitr();
+                    tmptitr.replace('\'',' ');
+                    mynews.get(i).setTitr(tmptitr);
+
+                    tmptitr = mynews.get(i).getLead();
+                    tmptitr.replace('\'',' ');
+                    mynews.get(i).setLead(tmptitr);
+
+
+                    createStudent = "insert into 'news' ('id' , 'service' , 'titr' , 'lead' , 'jdate') values ('"+mynews.get(i).getId()+"','"+mynews.get(i).getService()+"', '"+mynews.get(i).getTitr()+"','"+mynews.get(i).getLead()+"','"+mynews.get(i).getJdate()+"') ";
+                     db.execSQL(createStudent);
+                }
+                db.close();
+                Log.d("RESPONSE", "size="+mynews.size());
                 EventBus.getDefault().post(new IntentServiceResults(Activity.RESULT_OK, "done!!"));
 
 
@@ -60,4 +86,23 @@ public class UpdateService extends Service {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
+    public class DBHelper extends SQLiteOpenHelper {
+        public DBHelper() {
+            super(UpdateService.this, "myapp2.db", null, 1);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            String Createtbl = "CREATE TABLE 'news' ('id' INTEGER PRIMARY KEY  NOT NULL , 'service' VARCHAR, 'titr' VARCHAR, 'lead' VARCHAR, 'jdate' VARCHAR)";
+            Log.d("========", "CREATED");
+            db.execSQL(Createtbl);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        }
+    }
+
 }

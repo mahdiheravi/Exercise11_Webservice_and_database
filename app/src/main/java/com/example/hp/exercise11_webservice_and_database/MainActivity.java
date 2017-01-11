@@ -14,38 +14,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*
-        DBHelper mydb = new DBHelper();
+
+        DBHelper2 mydb = new DBHelper2();
         SQLiteDatabase db = mydb.getWritableDatabase();
-        String createStudent = "insert into 'student' ('name' , 'family') values ('mahdi','heravi') ";
-        db.execSQL(createStudent);
-        db.close();
-*/
+ //        String createStudent = "insert into 'student' ('name' , 'family') values ('mahdi','heravi') ";
+ //       db.execSQL(createStudent);
+ //       db.close();
+
         Intent myintent  = new Intent(MainActivity.this,UpdateService.class);
         startService(myintent);
     }
-
-    public class DBHelper extends SQLiteOpenHelper {
-        public DBHelper() {
-            super(MainActivity.this, "myapp2.db", null, 2);
+    public class DBHelper2 extends SQLiteOpenHelper {
+        public DBHelper2() {
+            super(MainActivity.this, "myapp2.db", null, 1);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
+            String Createtbl = "CREATE TABLE 'news' ('id' INTEGER PRIMARY KEY  NOT NULL , 'service' VARCHAR, 'titr' VARCHAR, 'lead' VARCHAR, 'jdate' VARCHAR)";
             Log.d("========", "CREATED");
-            String Createtbl = "CREATE TABLE 'student' ('id' INTEGER PRIMARY KEY  NOT NULL , 'name' VARCHAR, 'family' VARCHAR)";
             db.execSQL(Createtbl);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if (oldVersion == 1 && newVersion == 2) {
-                Log.d("========", "ver2");
-                String Createtbl = "CREATE TABLE 'teacher' ('id' INTEGER PRIMARY KEY  NOT NULL , 'name' VARCHAR, 'family' VARCHAR)";
-                db.execSQL(Createtbl);
-
-            }
 
         }
     }
+
+
 }
