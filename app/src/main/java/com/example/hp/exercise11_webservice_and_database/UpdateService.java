@@ -16,7 +16,10 @@ import com.android.volley.toolbox.Volley;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+
 public class UpdateService extends Service {
+    ArrayList<news> mynews;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("Started", "STARTED");
@@ -26,6 +29,7 @@ public class UpdateService extends Service {
             @Override
             public void onResponse(String response) {
                 Log.d("RESPONSE", response);
+                
                 EventBus.getDefault().post(new IntentServiceResults(Activity.RESULT_OK, "done!!"));
 
 
