@@ -7,8 +7,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Button start, stop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,13 +21,33 @@ public class MainActivity extends AppCompatActivity {
 
         DBHelper2 mydb = new DBHelper2();
         SQLiteDatabase db = mydb.getWritableDatabase();
- //        String createStudent = "insert into 'student' ('name' , 'family') values ('mahdi','heravi') ";
- //       db.execSQL(createStudent);
- //       db.close();
 
-        Intent myintent  = new Intent(MainActivity.this,UpdateService.class);
-        startService(myintent);
+        start = (Button) findViewById(R.id.btnstart);
+        stop = (Button) findViewById(R.id.btnstop);
+
+        start.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+
+
+                startService(new Intent(MainActivity.this, UpdateService.class));
+            }
+        });
+        stop.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                stopService(new Intent(MainActivity.this, UpdateService.class));
+            }
+        });
+
+
+
     }
+
     public class DBHelper2 extends SQLiteOpenHelper {
         public DBHelper2() {
             super(MainActivity.this, "myapp2.db", null, 1);
