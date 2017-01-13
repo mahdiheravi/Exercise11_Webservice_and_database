@@ -9,10 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button start, stop;
+    private Button start, stop, getlastid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +25,25 @@ public class MainActivity extends AppCompatActivity {
 
         start = (Button) findViewById(R.id.btnstart);
         stop = (Button) findViewById(R.id.btnstop);
+        getlastid = (Button) findViewById(R.id.getlastid);
+        getlastid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBController dbController = new DBController(MainActivity.this);
+                Toast.makeText(MainActivity.this, "topid = "+dbController.gettopid(), Toast.LENGTH_SHORT).show();
 
+            }
+        });
         start.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-
-                startService(new Intent(MainActivity.this, UpdateService.class));
+                if (!Helper.isMyServiceRunning(MainActivity.this, UpdateService.class)) {
+                    startService(new Intent(MainActivity.this, UpdateService.class));
+                    Toast.makeText(MainActivity.this, "Service Started", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         stop.setOnClickListener(new View.OnClickListener() {
@@ -43,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 stopService(new Intent(MainActivity.this, UpdateService.class));
             }
         });
-
 
 
     }
