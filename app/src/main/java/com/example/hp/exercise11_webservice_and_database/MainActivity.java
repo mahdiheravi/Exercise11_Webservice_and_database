@@ -11,9 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.Subscribe;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button start, stop, getlastid;
+    private int lastid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DBController dbController = new DBController(MainActivity.this);
+                lastid = dbController.gettopid();
                 Toast.makeText(MainActivity.this, "topid = "+dbController.gettopid(), Toast.LENGTH_SHORT).show();
 
             }

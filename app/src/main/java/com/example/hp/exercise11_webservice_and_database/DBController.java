@@ -20,41 +20,54 @@ public class DBController {
         db = mydb.getWritableDatabase();
 
     }
-    public int gettopid()
-    {
-        int id=0;
 
-        String command ="SELECT id FROM news order by id desc limit 1";
-        Cursor tmpnews = db.query("news",new String[]{"id"},null,null,null,null,"id","1");
-        id = tmpnews.getInt(tmpnews.getColumnIndex("id"));
+    public int gettopid() {
+        Cursor cursor = null;
+        int id = 0;
+        String command = "SELECT id FROM news order by id desc limit 1";
+        Log.d("Mahdi", "rawQueryStart");
+        cursor = db.rawQuery(command, null);
+        Log.d("Mahdi", "rawQueryEnd");
+
+
+        if (cursor.getCount() > 0) {
+
+            cursor.moveToFirst();
+            id = Integer.parseInt(cursor.getString(0));
+//            id = cursor.getInt(cursor.getColumnIndex("id"));
+        }
+
+
+        cursor.close();
         return id;
+
+
     }
-    public void insert(news mynews)
-    {
+
+    public void insert(news mynews) {
         String tmp;
 
         tmp = mynews.getTitr();
-        tmp.replace('\'',' ');
-        tmp.replace('\"',' ');
+        tmp.replace('\'', ' ');
+        tmp.replace('\"', ' ');
         mynews.setTitr(tmp);
 
         tmp = mynews.getLead();
-        tmp.replace('\'',' ');
-        tmp.replace('\"',' ');
+        tmp.replace('\'', ' ');
+        tmp.replace('\"', ' ');
         mynews.setLead(tmp);
-
-        String command = "insert into 'news' ('id' , 'service' , 'titr' , 'lead' , 'jdate') values ('"+mynews.getId()+"','"+mynews.getService()+"', '"+mynews.getTitr()+"','"+mynews.getLead()+"','"+mynews.getJdate()+"') ";
+        Log.d("mahdi", "id = " + mynews.getId());
+        String command = "insert into 'news' ('id' , 'service' , 'titr' , 'lead' , 'jdate') values ('" + mynews.getId() + "','" + mynews.getService() + "', '" + mynews.getTitr() + "','" + mynews.getLead() + "','" + mynews.getJdate() + "') ";
         db.execSQL(command);
 
     }
-    public void insert(news[] mynews)
-    {
-        for(news item : mynews)
-        {
-            insert(item);
+
+    public void insert(news[] mynews, int lastid) {
+        for (news item : mynews) {
+            if (item.getId() > lastid)
+                insert(item);
         }
     }
-
 
 
     public class DBHelper extends SQLiteOpenHelper {

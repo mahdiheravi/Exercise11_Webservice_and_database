@@ -24,8 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateService extends Service {
+    private int lastid;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        DBController dbController1 = new DBController(UpdateService.this);
+        lastid = dbController1.gettopid();
 
         EventBus.getDefault().post(new MessageEvent("Service Started" , 1));
         StringRequest request = new StringRequest(Request.Method.GET, DB.API,
@@ -38,7 +41,7 @@ public class UpdateService extends Service {
                         news[] mynews =  gson.fromJson(response , news[].class);
                         DBController dbController = new DBController(UpdateService.this);
 
-                        dbController.insert(mynews);
+                        dbController.insert(mynews,lastid);
                         EventBus.getDefault().post(new MessageEvent("DB Task Finished" , 3));
 
                     }
