@@ -70,7 +70,7 @@ public class DBController {
         ArrayList<news> mynews = new ArrayList<>();
         Cursor cursor = null;
         int id = 0;
-        String command = "SELECT service,titr,lead,jdate FROM news ";
+        String command = "SELECT id,service,titr,lead,jdate FROM news order by id desc ";
         Log.d("Mahdi", "rawQueryStart");
         cursor = db.rawQuery(command, null);
         Log.d("Mahdi", "rawQueryEnd");
