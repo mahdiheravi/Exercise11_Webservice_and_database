@@ -110,14 +110,14 @@ public class MainActivity extends AppCompatActivity {
             TextView txtservice = (TextView) mylist.findViewById(R.id.service);
             TextView txttitr = (TextView) mylist.findViewById(R.id.titr);
             TextView txtjdate = (TextView) mylist.findViewById(R.id.jdate);
-            TextView txtlead = (TextView) mylist.findViewById(R.id.leade);
+            TextView txtlead = (TextView) mylist.findViewById(R.id.lead);
             news tmp_news = new news();
             tmp_news.setJdate(mynews.get(position).getJdate());
             tmp_news.setTitr(mynews.get(position).getTitr());
             tmp_news.setLead(mynews.get(position).getLead());
             tmp_news.setService(mynews.get(position).getService());
 
-            txtjdate.setText(tmp_news.getJdate());
+           txttitr.setText(tmp_news.getTitr());
             txtlead.setText(tmp_news.getLead());
             txtservice.setText(tmp_news.getService());
             txtjdate.setText(tmp_news.getJdate());
