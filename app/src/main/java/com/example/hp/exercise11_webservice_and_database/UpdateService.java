@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
@@ -30,19 +31,20 @@ public class UpdateService extends Service {
         DBController dbController1 = new DBController(UpdateService.this);
         lastid = dbController1.gettopid();
 
-        EventBus.getDefault().post(new MessageEvent("Service Started" , 1));
+        EventBus.getDefault().post(new MessageEvent("Service Started" , 1,0));
         StringRequest request = new StringRequest(Request.Method.GET, DB.API,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
-                        EventBus.getDefault().post(new MessageEvent("Response Received" , 2));
+                        EventBus.getDefault().post(new MessageEvent("Response Received" , 2,0));
                         Gson gson = new Gson();
                         news[] mynews =  gson.fromJson(response , news[].class);
                         DBController dbController = new DBController(UpdateService.this);
 
-                        dbController.insert(mynews,lastid);
-                        EventBus.getDefault().post(new MessageEvent("DB Task Finished" , 3));
+                        int count = dbController.insert(mynews,lastid);
+                        Toast.makeText(UpdateService.this, "record added = "+count, Toast.LENGTH_SHORT).show();
+                        EventBus.getDefault().post(new MessageEvent("DB Task Finished" , 3,count));
 
                     }
                 }, new Response.ErrorListener() {

@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by hp on 01/13/2017.
  */
@@ -13,10 +15,12 @@ import android.util.Log;
 public class DBController {
 
     SQLiteDatabase db;
+    int count;
 
 
     public DBController(Context context) {
         DBHelper mydb = new DBHelper(context);
+        count = 0;
         db = mydb.getWritableDatabase();
 
     }
@@ -62,11 +66,48 @@ public class DBController {
 
     }
 
-    public void insert(news[] mynews, int lastid) {
-        for (news item : mynews) {
-            if (item.getId() > lastid)
-                insert(item);
+    public ArrayList<news> Select_from_DB() {
+        ArrayList<news> mynews = new ArrayList<>();
+        Cursor cursor = null;
+        int id = 0;
+        String command = "SELECT service,titr,lead,jdate FROM news ";
+        Log.d("Mahdi", "rawQueryStart");
+        cursor = db.rawQuery(command, null);
+        Log.d("Mahdi", "rawQueryEnd");
+
+
+        if (cursor.getCount() > 0) {
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        news tmp_news = new news();
+                        tmp_news.setService(cursor.getString(cursor.getColumnIndex("service")));
+                        tmp_news.setTitr(cursor.getString(cursor.getColumnIndex("titr")));
+                        tmp_news.setLead(cursor.getString(cursor.getColumnIndex("lead")));
+                        tmp_news.setJdate(cursor.getString(cursor.getColumnIndex("jdate")));
+
+
+                        mynews.add(tmp_news);
+                    } while (cursor.moveToNext());
+                }
+            }
         }
+
+        cursor.close();
+
+        return mynews;
+    }
+
+
+    public int insert(news[] mynews, int lastid) {
+        for (news item : mynews) {
+            if (item.getId() > lastid) {
+                insert(item);
+                count++;
+            }
+
+        }
+        return count;
     }
 
 
